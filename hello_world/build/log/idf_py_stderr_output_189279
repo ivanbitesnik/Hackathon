@@ -1,0 +1,7 @@
+Command: /home/mariano/.espressif/python_env/idf6.1_py3.12_env/bin/python /home/mariano/esp/esp-idf/tools/idf_monitor.py -p /dev/ttyACM0 -b 115200 --toolchain-prefix xtensa-esp32s3-elf- --target esp32s3 --revision 0 /home/mariano/hackathon/hello_world/build/hello_world.elf /home/mariano/hackathon/hello_world/build/bootloader/bootloader.elf -m '/home/mariano/.espressif/python_env/idf6.1_py3.12_env/bin/python' '/home/mariano/esp/esp-idf/tools/idf.py' '-p' '/dev/ttyACM0'
+--- esp-idf-monitor 1.10.0 on /dev/ttyACM0 115200
+--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H
+--- 0x40378c06: esp_cpu_wait_for_intr at /home/mariano/esp/esp-idf/components/esp_hw_support/cpu.c:64
+--- 0x403c8700: _stext at ??:?
+--- 0x403c8920: call_start_cpu0 at /home/mariano/esp/esp-idf/components/bootloader/subproject/main/bootloader_start.c:27
+
