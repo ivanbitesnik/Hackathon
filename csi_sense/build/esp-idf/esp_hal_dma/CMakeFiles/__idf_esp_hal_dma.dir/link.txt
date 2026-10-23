@@ -1,2 +1,0 @@
-/home/acheto/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/bin/xtensa-esp32s3-elf-ar qc libesp_hal_dma.a CMakeFiles/__idf_esp_hal_dma.dir/gdma_hal_top.c.obj CMakeFiles/__idf_esp_hal_dma.dir/esp32s3/gdma_periph.c.obj CMakeFiles/__idf_esp_hal_dma.dir/gdma_hal_ahb_v1.c.obj
-/home/acheto/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/bin/xtensa-esp32s3-elf-ranlib libesp_hal_dma.a

@@ -1,7 +1,0 @@
-"-specs=/home/acheto/Desktop/projects/Hackathon/Project/csi_sense/build/bootloader/specs/picolibc.specs"
--D__PICOLIBC_ERRNO_FUNCTION=__errno
--mlongcalls
--fno-builtin-memcpy
--fno-builtin-memset
--fno-builtin-bzero
--fno-rtti
