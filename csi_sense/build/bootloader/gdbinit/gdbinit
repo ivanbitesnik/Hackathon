@@ -1,0 +1,2 @@
+source /home/acheto/Desktop/projects/Hackathon/Project/csi_sense/build/bootloader/gdbinit/symbols
+source /home/acheto/Desktop/projects/Hackathon/Project/csi_sense/build/bootloader/gdbinit/connect

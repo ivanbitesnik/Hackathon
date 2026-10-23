@@ -14,6 +14,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "freertos/task.h"
@@ -26,6 +27,8 @@
 #include "esp_timer.h"
 #include "esp_wifi.h"
 #include "nvs_flash.h"
+
+#include "display.h"
 
 static const char *TAG = "csi";
 
@@ -124,6 +127,11 @@ static void run_transmitter(void)
     ESP_ERROR_CHECK(esp_now_set_peer_rate_config(BROADCAST_MAC, &rate));
 
     ESP_LOGI(TAG, "TRANSMITTER: %d packets/s on channel %d", TX_RATE_HZ, WIFI_CHANNEL);
+
+    display_clear();
+    display_text(10, 8, "TRANSMITTER", false);
+    display_flush();
+
     uint32_t seq = 0;
     uint32_t failed = 0;
     TickType_t last_wake = xTaskGetTickCount();
@@ -191,6 +199,11 @@ static void run_receiver(void)
     ESP_ERROR_CHECK(esp_wifi_set_csi(true));
 
     ESP_LOGI(TAG, "RECEIVER: listening on channel %d", WIFI_CHANNEL);
+
+    display_clear();
+    display_text(10, 8, "RECEIVER", false);
+    display_flush();
+
     csi_frame_t frame;
     char line[32 + MAX_SUBCARRIERS * 4 + 2];
     int64_t next_status_us = 0;
@@ -219,6 +232,20 @@ void app_main(void)
     nvs_init();
     bool transmitter = load_role_is_transmitter();
     ESP_LOGI(TAG, "ROLE: %s (hold KEY_4 while resetting to switch)", transmitter ? "TRANSMITTER" : "RECEIVER");
+
+    bool display_ok = display_init() == ESP_OK;
+    if (!display_ok) {
+        ESP_LOGE(TAG, "display init failed - continuing without screen");
+    }
+
+    if (display_ok) {
+        display_clear();
+        display_text(10, 8, "Buscando pword", false);
+        display_text(10, 24, "Buscando pword", false);
+        display_text(10, 40, "Buscando pword", false);
+        display_flush();
+        sleep(5);
+    }
 
     wifi_init(transmitter);
     if (transmitter) {

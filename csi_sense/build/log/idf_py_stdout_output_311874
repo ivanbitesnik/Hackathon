@@ -1,0 +1,132 @@
+Command: make -j 14 flash
+[  0%] Built target memory_ld_in_preprocess
+[  0%] Built target partition_table_bin
+[  0%] Built target sections_ld_in_preprocess
+[  0%] Built target custom_bundle
+[  0%] Built target _project_elf_src
+[  0%] [34m[1mPerforming build step for 'bootloader'[0m
+[  2%] Built target __idf_esp_wifi
+[  2%] Built target __idf_esp_coex
+[  2%] Built target bootloader_sections_ld_in_preprocess
+[  2%] Built target _project_elf_src
+[  2%] Built target bootloader_memory_ld_in_preprocess
+[  8%] Built target __idf_log
+[ 15%] Built target __idf_esp_rom
+[ 16%] Built target __idf_esp_common
+[ 23%] Built target __idf_esp_hw_support
+[ 12%] Built target __idf_wpa_supplicant
+[ 24%] Built target __idf_esp_system
+[ 13%] Built target __idf_esp_netif
+[ 25%] Built target __idf_esp_hal_systimer
+[ 31%] Built target __idf_efuse
+[ 46%] Built target __idf_bootloader_support
+[ 50%] Built target __idf_esp_security
+[ 24%] Built target __idf_lwip
+[ 51%] Built target __idf_esp_hal_security
+[ 25%] Built target __idf_vfs
+[ 55%] Built target __idf_esp_hal_ana_conv
+[ 57%] Built target __idf_esp_hal_wdt
+[ 26%] Built target __idf_esp_driver_usb_serial_jtag
+[ 59%] Built target __idf_esp_hal_timg
+[ 26%] Built target __idf_esp_driver_uart
+[ 60%] Built target __idf_micro-ecc
+[ 26%] Built target __idf_esp_phy
+[ 61%] Built target __idf_esp_bootloader_format
+[ 62%] Built target __idf_spi_flash
+[ 28%] Built target __idf_nvs_flash
+[ 63%] Built target __idf_esp_hal_mspi
+[ 28%] Built target __idf_nvs_sec_provider
+[ 65%] Built target __idf_esp_hal_clock
+[ 28%] Built target __idf_esp_event
+[ 69%] Built target __idf_esp_hal_gpspi
+[ 28%] Built target __idf_esp_psram
+[ 71%] Built target __idf_esp_hal_dma
+[ 28%] Built target __idf_esp_ringbuf
+[ 74%] Built target __idf_esp_hal_uart
+[ 28%] Built target __idf_cxx
+[ 76%] Built target __idf_esp_hal_pmu
+[ 29%] Built target __idf_pthread
+[ 80%] Built target __idf_esp_hal_usb
+[ 32%] Built target __idf_esp_libc
+[ 85%] Built target __idf_esp_hal_gpio
+[ 89%] Built target __idf_hal
+[ 34%] Built target __idf_freertos
+[ 94%] Built target __idf_soc
+[ 96%] Built target __idf_xtensa
+[ 97%] Built target __idf_main
+[ 41%] Built target __idf_esp_hw_support
+[ 42%] Built target __idf_esp_hal_touch_sens
+[ 98%] Built target bootloader.elf
+[ 43%] Built target __idf_esp_hal_pmu
+[100%] Built target gen_bootloader_binary
+[100%] Built target gen_project_binary
+[ 44%] Built target __idf_esp_hal_usb
+[ 45%] Built target __idf_esp_hal_gpio
+Bootloader binary size 0x5670 bytes. 0x2990 bytes (32%) free.
+[ 46%] Built target __idf_soc
+[100%] Built target bootloader_check_size
+[ 47%] Built target __idf_heap
+[100%] Built target app
+[ 47%] [34m[1mNo install step for 'bootloader'[0m
+[ 49%] Built target __idf_log
+[ 49%] [34m[1mCompleted 'bootloader'[0m
+[ 50%] Built target __idf_hal
+[ 51%] Built target bootloader
+[ 53%] Built target __idf_esp_rom
+[ 54%] Built target __idf_esp_common
+[ 59%] Built target __idf_esp_system
+[ 61%] Built target __idf_spi_flash
+[ 63%] Built target __idf_bootloader_support
+[ 64%] Built target __idf_esp_hal_ana_conv
+[ 64%] Built target __idf_esp_hal_wdt
+[ 64%] Built target everest
+[ 65%] Built target p256-m
+[ 71%] Built target builtin
+[ 71%] Built target pqcp
+[ 73%] Built target extras
+[ 74%] Built target platform
+[ 75%] Built target utilities
+[ 80%] Built target tfpsacrypto
+[ 83%] Built target mbedtls
+[ 84%] Built target mbedx509
+[ 85%] Built target __idf_mbedtls
+[ 85%] Built target __idf_esp_driver_dma
+[ 86%] Built target __idf_esp_mm
+[ 87%] Built target __idf_esp_pm
+[ 87%] Built target __idf_esp_hal_uart
+[ 88%] Built target __idf_esp_driver_gpio
+[ 89%] Built target __idf_esp_security
+[ 89%] Built target __idf_esp_timer
+[ 89%] Built target __idf_esp_hal_systimer
+[ 89%] Built target __idf_esp_hal_timg
+[ 91%] Built target __idf_efuse
+[ 92%] Built target __idf_esp_partition
+[ 92%] Built target __idf_app_update
+[ 92%] Built target __idf_esp_bootloader_format
+[ 92%] Built target __idf_esp_app_format
+[ 93%] Built target __idf_esp_hal_security
+[ 93%] Built target __idf_esp_hal_mspi
+[ 93%] Built target __idf_esp_hal_clock
+[ 94%] Built target __idf_esp_hal_gpspi
+[ 95%] Built target __idf_esp_hal_dma
+[ 95%] Built target __idf_esp_stdio
+[ 96%] Built target __idf_xtensa
+[ 96%] Built target __idf_esp_hal_i2s
+[ 96%] Built target __idf_esp_hal_i2c
+[ 97%] Built target __idf_esp_driver_spi
+[ 98%] Built target __idf_esp_hal_lcd
+[ 99%] Built target __idf_esp_driver_i2c
+[ 99%] Built target __idf_esp_driver_i2s
+[100%] Built target __idf_esp_lcd
+[100%] Built target __idf_main
+[100%] Built target __ldgen_output_sections.ld
+[100%] Built target csi_sense.elf
+[100%] Built target gen_csi_sense_binary
+[100%] Built target gen_project_binary
+csi_sense.bin binary size 0xc32d0 bytes. Smallest app partition is 0x177000 bytes. 0xb3d30 bytes (48%) free.
+[100%] Built target app_check_size
+[100%] Built target app
+esptool --chip esp32s3 -p /dev/ttyACM0 -b 460800 --before=default-reset --after=hard-reset write-flash --flash-mode dio --flash-freq 80m --flash-size 16MB 0x0 bootloader/bootloader.bin 0x8000 partition_table/partition-table.bin 0x10000 csi_sense.bin --skip-flashed
+esptool v5.6.0
+Serial port /dev/ttyACM0:
+
