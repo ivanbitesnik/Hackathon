@@ -1,0 +1,23 @@
+esp-idf/log/CMakeFiles/__idf_log.dir/src/util.c.obj: \
+ /home/acheto/Desktop/projects/Hackathon/Setup/esp-idf/components/log/src/util.c \
+ /home/acheto/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/picolibc/include/stdint.h \
+ /home/acheto/Desktop/projects/Hackathon/Setup/esp-idf/components/esp_libc/platform_include/sys/cdefs.h \
+ /home/acheto/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/picolibc/include/sys/cdefs.h \
+ /home/acheto/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/picolibc/include/sys/config.h \
+ /home/acheto/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/picolibc/include/machine/ieeefp.h \
+ /home/acheto/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/picolibc/include/sys/features.h \
+ /home/acheto/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/picolibc/include/picolibc.h \
+ /home/acheto/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/15.2.0/include/float.h \
+ /home/acheto/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/picolibc/include/machine/_default_types.h \
+ /home/acheto/Desktop/projects/Hackathon/Project/csi_sense/build/bootloader/config/sdkconfig.h \
+ /home/acheto/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/15.2.0/include/stddef.h \
+ /home/acheto/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/picolibc/include/sys/_intsup.h \
+ /home/acheto/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/picolibc/include/sys/_stdint.h \
+ /home/acheto/Desktop/projects/Hackathon/Setup/esp-idf/components/esp_rom/include/esp_rom_sys.h \
+ /home/acheto/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/15.2.0/include/stdbool.h \
+ /home/acheto/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/picolibc/include/inttypes.h \
+ /home/acheto/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/picolibc/include/sys/_locale.h \
+ /home/acheto/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/15.2.0/include/stdarg.h \
+ /home/acheto/Desktop/projects/Hackathon/Setup/esp-idf/components/soc/esp32s3/include/soc/reset_reasons.h \
+ /home/acheto/Desktop/projects/Hackathon/Setup/esp-idf/components/soc/esp32s3/include/soc/soc_caps.h \
+ /home/acheto/Desktop/projects/Hackathon/Setup/esp-idf/components/soc/include/soc/soc_caps_eval.h

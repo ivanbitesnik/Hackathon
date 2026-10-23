@@ -1,0 +1,14 @@
+Command: make -j 14 all
+fatal: not a git repository (or any of the parent directories): .git
+NOTE: /home/acheto/Desktop/projects/Hackathon/Setup/esp-idf/components/bootloader/Kconfig.projbuild:383: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /home/acheto/Desktop/projects/Hackathon/Setup/esp-idf/components/bootloader/Kconfig.projbuild:423: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /home/acheto/Desktop/projects/Hackathon/Setup/esp-idf/components/esp_hw_support/./lowpower/port/esp32p4/Kconfig.p4_rev3_mspi_workaround:6: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /home/acheto/Desktop/projects/Hackathon/Setup/esp-idf/components/esp_system/./port/soc/esp32s3/Kconfig.memory:21: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: Kconfig parser version: 1
+NOTE: Kconfig defaults policy: use sdkconfig
+NOTE: Status: Finished successfully
+NOTE: /home/acheto/Desktop/projects/Hackathon/Setup/esp-idf/components/bootloader/Kconfig.projbuild:383: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /home/acheto/Desktop/projects/Hackathon/Setup/esp-idf/components/bootloader/Kconfig.projbuild:423: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /home/acheto/Desktop/projects/Hackathon/Setup/esp-idf/components/esp_hw_support/./lowpower/port/esp32p4/Kconfig.p4_rev3_mspi_workaround:6: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /home/acheto/Desktop/projects/Hackathon/Setup/esp-idf/components/esp_mm/Kconfig:20: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
+NOTE: /home/acheto/Desktop/projects/Hackathon/Setup/esp-idf/components/esp_system/./port/soc/esp32s3/Kconfig.memory:21: Deprecation notice: hex literal '0' without '0x' prefix detected. In the next major version, hex literals will be required to have a '0x' prefix.
