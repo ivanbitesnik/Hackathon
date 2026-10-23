@@ -1,2 +1,0 @@
-/home/acheto/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/bin/xtensa-esp32s3-elf-ar qc libesp_hal_pmu.a CMakeFiles/__idf_esp_hal_pmu.dir/esp32s3/rtc_cntl_hal.c.obj CMakeFiles/__idf_esp_hal_pmu.dir/brownout_hal.c.obj
-/home/acheto/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/bin/xtensa-esp32s3-elf-ranlib libesp_hal_pmu.a
