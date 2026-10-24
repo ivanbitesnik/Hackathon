@@ -161,15 +161,16 @@ static void run_transmitter(void)
         }
 
         display_clear();
-        display_text(30, 5, "TRANSMITTER", false);
-        display_text(5, 18, "Check receiver for instructions!", false);
+        display_text(40, 5, "TRANSMITTER", false);
+        display_text(5, 18, "Check receiver for", false);
+        display_text(5, 26, "instructions!", false);
 
         char dropped_str[10];
         snprintf(dropped_str, 30, "Dropped packets: %ld", s_dropped);
-        display_text(5, 30, dropped_str, false);
+        display_text(2, 36, dropped_str, false);
         char total_str[10];
         snprintf(total_str, 30, "Total packets: %ld", s_dropped);
-        display_text(5, 42, total_str, false);
+        display_text(2, 48, total_str, false);
         display_flush();
 
         vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(1000 / TX_RATE_HZ));  // Send signal every 10ms
@@ -281,14 +282,15 @@ static void run_receiver(void)
         }
 
         display_clear();
-        display_text(5, 5, "RECEIVER", false);
+        display_text(40, 5, "RECEIVER", false);
         if (s_receiver_state == CALIBRATING_IDLE ||
             s_receiver_state == CALIBRATING_WALK) {
             uint32_t remaining_ms = CALIBRATION_DURATION_MS - calibration_elapsed_ms;
             char status[32];
             if (s_receiver_state == CALIBRATING_IDLE)
             {
-                display_text(5, 18, "Please keep still for baseline", false);
+                display_text(2, 18, "Please keep still", false);
+                display_text(2, 26, "for idle baseline", false);
                 s_idle_samples++;
                 s_average_idle_interval_ms += (packet_interval_ms - s_average_idle_interval_ms) / s_idle_samples;
                 s_average_idle_rssi += (frame.rssi - s_average_idle_rssi) / s_idle_samples;
@@ -297,7 +299,8 @@ static void run_receiver(void)
             }
             else
             {
-                display_text(5, 18, "Please walk around for motion baseline", false);
+                display_text(2, 18, "Please walk around", false);
+                display_text(2, 26, "for motion baseline", false);
                 s_walk_samples++;
                 s_average_walk_interval_ms += (packet_interval_ms - s_average_walk_interval_ms) / s_walk_samples;
                 s_average_walk_rssi += (frame.rssi - s_average_walk_rssi) / s_walk_samples;
@@ -305,13 +308,13 @@ static void run_receiver(void)
                                           s_walk_amplitude_samples);
             }
             snprintf(status, sizeof(status), "Remaining: %" PRIu32 " s", (remaining_ms + 999) / 1000);
-            display_text(5, 30, status, false);
+            display_text(2, 45, status, false);
         }
         else
         {
             int len = snprintf(line, sizeof(line), "CSI,%" PRIu32 ",%d,", frame.time_ms, frame.rssi);
             for (int i = 0; i < frame.count; i++) {
-                int written = snprintf(line + len, sizeof(line) - (size_t)len,
+                const int written = snprintf(line + len, sizeof(line) - (size_t)len,
                                        i ? " %u" : "%u", frame.amplitude[i]);
                 if (written < 0 || (size_t)written >= sizeof(line) - (size_t)len) {
                     len = -1;
@@ -320,7 +323,7 @@ static void run_receiver(void)
                 len += written;
             }
             for (int i = 0; len >= 0 && i < frame.count; i++) {
-                int written = snprintf(line + len, sizeof(line) - (size_t)len,
+                const int written = snprintf(line + len, sizeof(line) - (size_t)len,
                                        i ? " %.1f" : ",%.1f",
                                        s_average_idle_amplitude[i]);
                 if (written < 0 || (size_t)written >= sizeof(line) - (size_t)len) {
@@ -330,7 +333,7 @@ static void run_receiver(void)
                 len += written;
             }
             for (int i = 0; len >= 0 && i < frame.count; i++) {
-                int written = snprintf(line + len, sizeof(line) - (size_t)len,
+                const int written = snprintf(line + len, sizeof(line) - (size_t)len,
                                        i ? " %.1f" : ",%.1f",
                                        s_average_walk_amplitude[i]);
                 if (written < 0 || (size_t)written >= sizeof(line) - (size_t)len) {
@@ -347,6 +350,34 @@ static void run_receiver(void)
             if (fwrite(line, 1, (size_t)len, stdout) != (size_t)len) {
                 ESP_LOGE(TAG, "Failed to write CSI frame to stdout");
             }
+
+            double current_amplitude = 0.0;
+            double idle_amplitude = 0.0;
+            double walk_amplitude = 0.0;
+            for (int i = 0; i < frame.count; i++) {
+                current_amplitude += frame.amplitude[i];
+                idle_amplitude += s_average_idle_amplitude[i];
+                walk_amplitude += s_average_walk_amplitude[i];
+            }
+
+            float fill_percentage = 0.0f;
+            if (frame.count > 0) {
+                current_amplitude /= frame.count;
+                idle_amplitude /= frame.count;
+                walk_amplitude = 1.2f * walk_amplitude / frame.count;
+                if (walk_amplitude > idle_amplitude) {
+                    fill_percentage = (float)((current_amplitude - idle_amplitude) /
+                                              (walk_amplitude - idle_amplitude));
+                    if (fill_percentage < 0.0f) {
+                        fill_percentage = 0.0f;
+                    } else if (fill_percentage > 1.0f) {
+                        fill_percentage = 1.0f;
+                    }
+                }
+            }
+
+            display_draw_rect(22, 30, 82, 10);
+            display_fill_rect(24, 32, (int)(fill_percentage * 78), 6, true);
         }
         
         display_flush();
@@ -366,7 +397,7 @@ void app_main(void)
 
     if (display_ok) {
         display_clear();
-        display_text(10, 8, "Awaiting connection...", false);
+        display_text(5, 8, "Awaiting connection...", false);
         display_flush();
     }
 
