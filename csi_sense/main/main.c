@@ -128,10 +128,6 @@ static void run_transmitter(void)
 
     ESP_LOGI(TAG, "TRANSMITTER: %d packets/s on channel %d", TX_RATE_HZ, WIFI_CHANNEL);
 
-    display_clear();
-    display_text(10, 8, "TRANSMITTER", false);
-    display_flush();
-
     uint32_t seq = 0;
     uint32_t failed = 0;
     TickType_t last_wake = xTaskGetTickCount();
@@ -212,11 +208,7 @@ static void run_receiver(void)
     ESP_ERROR_CHECK(esp_wifi_set_csi(true));
 
     ESP_LOGI(TAG, "RECEIVER: listening on channel %d", WIFI_CHANNEL);
-
-    display_clear();
-    display_text(10, 8, "RECEIVER", false);
-    display_flush();
-
+    
     csi_frame_t frame;
     char line[32 + MAX_SUBCARRIERS * 4 + 2];
     int64_t next_status_us = 0;
