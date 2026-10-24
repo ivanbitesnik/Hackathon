@@ -1,0 +1,6 @@
+- mappear 3d, se puede, que nos faltaría?
+- es un jammer? interrumpe alguna señal? podemos evitarlo
+- lado malo
+- creo que hay un paper o una demo que habla sobre esto - DensePose
+- fuerza de la señal
+- Ai, modelos y mas
