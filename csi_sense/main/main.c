@@ -44,15 +44,15 @@ static const uint8_t BROADCAST_MAC[6] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 
 typedef struct {
     uint32_t time_ms;
-    int8_t rssi;
+    int8_t rssi;    // Signal strength indicator
     uint8_t count;
     uint8_t amplitude[MAX_SUBCARRIERS];
 } csi_frame_t;
 
 static QueueHandle_t s_frames;
-static volatile uint32_t s_dropped;
-static volatile uint32_t s_csi_total;    /* CSI callbacks from any sender */
-static volatile uint32_t s_csi_matched;  /* ... of which came from the transmitter */
+static volatile uint32_t s_dropped = 0;
+static volatile uint32_t s_csi_total = 0;    /* CSI callbacks from any sender */
+static volatile uint32_t s_csi_matched = 0;  /* ... of which came from the transmitter */
 static uint8_t s_last_mac[6];             /* sender of the latest CSI callback, for debugging */
 
 static void nvs_init(void)
@@ -126,25 +126,31 @@ static void run_transmitter(void)
     };
     ESP_ERROR_CHECK(esp_now_set_peer_rate_config(BROADCAST_MAC, &rate));
 
-    ESP_LOGI(TAG, "TRANSMITTER: %d packets/s on channel %d", TX_RATE_HZ, WIFI_CHANNEL);
+    ESP_LOGI(TAG, "TRANSMITTER: %ld packets/s on channel %ld", TX_RATE_HZ, WIFI_CHANNEL);
 
-    display_clear();
-    display_text(10, 8, "TRANSMITTER", false);
-    display_flush();
-
-    uint32_t seq = 0;
-    uint32_t failed = 0;
     TickType_t last_wake = xTaskGetTickCount();
     while (true) {
         /* A failed send is just one missing CSI sample; only count it */
-        if (esp_now_send(BROADCAST_MAC, (const uint8_t *)&seq, sizeof(seq)) != ESP_OK) {
-            failed++;
+        if (esp_now_send(BROADCAST_MAC, (const uint8_t *)&s_csi_total, sizeof(s_csi_total)) != ESP_OK) {
+            s_dropped++;
         }
-        seq++;
-        if (seq % TX_RATE_HZ == 0) {
-            ESP_LOGI(TAG, "TRANSMITTER status: %" PRIu32 " sent, %" PRIu32 " failed", seq, failed);
+        s_csi_total++;
+        if (s_csi_total % TX_RATE_HZ == 0) {
+            ESP_LOGI(TAG, "TRANSMITTER status: %" PRIu32 " sent, %" PRIu32 " failed", s_csi_total, s_dropped);
         }
-        vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(1000 / TX_RATE_HZ));
+
+        display_clear();
+        display_text(5, 5, "TRANSMITTER", false);
+
+        char dropped_str[10];
+        snprintf(dropped_str, 30, "Dropped packets: %ld", s_dropped);
+        display_text(5, 18, dropped_str, false);
+        char total_str[10];
+        snprintf(total_str, 30, "Total packets: %ld", s_dropped);
+        display_text(5, 30, total_str, false);
+        display_flush();
+
+        vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(1000 / TX_RATE_HZ));  // Send signal every 10ms
     }
 }
 
@@ -152,6 +158,7 @@ static void run_transmitter(void)
 static void csi_callback(void *ctx, wifi_csi_info_t *info)
 {
     s_csi_total++;
+    
     memcpy(s_last_mac, info->mac, sizeof(s_last_mac));
     if (memcmp(info->mac, TX_MAC, sizeof(TX_MAC)) != 0) {
         return;
@@ -198,11 +205,7 @@ static void run_receiver(void)
     ESP_ERROR_CHECK(esp_wifi_set_csi_rx_cb(csi_callback, NULL));
     ESP_ERROR_CHECK(esp_wifi_set_csi(true));
 
-    ESP_LOGI(TAG, "RECEIVER: listening on channel %d", WIFI_CHANNEL);
-
-    display_clear();
-    display_text(10, 8, "RECEIVER", false);
-    display_flush();
+    ESP_LOGI(TAG, "RECEIVER: listening on channel %ld", WIFI_CHANNEL);
 
     csi_frame_t frame;
     char line[32 + MAX_SUBCARRIERS * 4 + 2];
@@ -214,9 +217,21 @@ static void run_receiver(void)
                      " dropped (serial too slow), last sender " MACSTR,
                      s_csi_total, s_csi_matched, s_dropped, MAC2STR(s_last_mac));
         }
+
         if (xQueueReceive(s_frames, &frame, pdMS_TO_TICKS(1000)) != pdTRUE) {
             continue;
         }
+
+        display_clear();
+        display_text(5, 5, "RECEIVER", false);
+
+        char total_str[10];
+        snprintf(total_str, 30, "Total packets: %ld", s_dropped);
+        display_text(5, 18, total_str, false);
+
+        char matched_str[10];
+        snprintf(matched_str, 30, "Matched packets: %ld", s_csi_matched);
+        display_text(5, 30, matched_str, false);
 
         int len = snprintf(line, sizeof(line), "CSI,%" PRIu32 ",%d,", frame.time_ms, frame.rssi);
         for (int i = 0; i < frame.count; i++) {
@@ -224,6 +239,10 @@ static void run_receiver(void)
         }
         line[len++] = '\n';
         fwrite(line, 1, len, stdout);
+        display_draw_rect(22, 40, 82, 10);
+        display_fill_rect(24, 40, 41, 6, true);
+        // Poll for a few seconds for max amplitude and get the percentage of it with the current one
+        display_flush();
     }
 }
 
