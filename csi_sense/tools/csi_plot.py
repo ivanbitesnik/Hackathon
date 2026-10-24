@@ -33,13 +33,15 @@ SIGMA_NOISE = 3           # below this line is indistinguishable from noise
 
 
 def parse(line):
-    """'CSI,<time_ms>,<rssi>,<a0 a1 ...>' -> (time_ms, rssi, amplitudes) or None."""
+    """Parse CSI rows, optionally including idle and walk mean amplitudes."""
     parts = line.split(",")
-    if len(parts) != 4 or parts[0] != "CSI":
+    if parts[0] != "CSI" or len(parts) not in (4, 6):
         return None
     try:
         amps = np.array(parts[3].split(), dtype=np.float32)
-        return int(parts[1]), int(parts[2]), amps
+        idle = np.array(parts[4].split(), dtype=np.float32) if len(parts) == 6 else None
+        walk = np.array(parts[5].split(), dtype=np.float32) if len(parts) == 6 else None
+        return int(parts[1]), int(parts[2]), amps, idle, walk
     except ValueError:
         return None
 
@@ -98,6 +100,8 @@ class SerialReader(threading.Thread):
         self.lock = threading.Lock()
         self.times = collections.deque(maxlen=WINDOW)
         self.frames = collections.deque(maxlen=WINDOW)
+        self.idle_averages = collections.deque(maxlen=WINDOW)
+        self.walk_averages = collections.deque(maxlen=WINDOW)
         self.rssi = 0
         self.total = 0  # frames received since start
 
@@ -111,17 +115,24 @@ class SerialReader(threading.Thread):
                 continue
             if self.record:
                 self.record.write(raw + "\n")
-            time_ms, rssi, amps = parsed
+            time_ms, rssi, amps, idle, walk = parsed
             amps = np.pad(amps[:SUBCARRIERS], (0, max(0, SUBCARRIERS - len(amps))))
+            if idle is not None:
+                idle = np.pad(idle[:SUBCARRIERS], (0, max(0, SUBCARRIERS - len(idle))))
+                walk = np.pad(walk[:SUBCARRIERS], (0, max(0, SUBCARRIERS - len(walk))))
             with self.lock:
                 self.times.append(time_ms)
                 self.frames.append(amps)
+                self.idle_averages.append(idle)
+                self.walk_averages.append(walk)
                 self.rssi = rssi
                 self.total += 1
 
     def snapshot(self):
         with self.lock:
-            return list(self.times), np.array(self.frames), self.rssi, self.total
+            return (list(self.times), np.array(self.frames), list(self.idle_averages),
+                    list(self.walk_averages),
+                    self.rssi, self.total)
 
 
 def main():
@@ -143,6 +154,11 @@ def main():
     fig.colorbar(heatmap, ax=ax_heat, label="amplitude")
     (motion_line,) = ax_score.plot([], [], color="tab:red", label="motion")
     (presence_line,) = ax_score.plot([], [], color="tab:blue", label="presence")
+    ax_deviation = ax_score.twinx()
+    (idle_deviation_line,) = ax_deviation.plot([], [], color="tab:green", label="from idle mean")
+    (walk_deviation_line,) = ax_deviation.plot([], [], color="tab:purple", label="from walk mean")
+    ax_deviation.set_ylabel("relative change from calibration mean (%)")
+    ax_deviation.legend(loc="upper right")
     ax_score.axhline(SIGMA_NOISE, color="gray", linestyle=":", linewidth=1)
     ax_score.set_xlim(0, WINDOW)
     ax_score.set_ylim(0, SIGMA_MAX)
@@ -153,15 +169,15 @@ def main():
     def on_key(event):
         if event.key == "c":
             baseline.ready = False
-            calibration_start["total"] = reader.snapshot()[3]
+            calibration_start["total"] = reader.snapshot()[5]
 
     fig.canvas.mpl_connect("key_press_event", on_key)
 
     def update(_):
-        times, frames, rssi, total = reader.snapshot()
+        times, frames, idle_averages, walk_averages, rssi, total = reader.snapshot()
         if len(frames) < 2:
             ax_heat.set_title("waiting for CSI frames... (is the transmitter on?)")
-            return heatmap, motion_line, presence_line
+            return heatmap, motion_line, presence_line, idle_deviation_line, walk_deviation_line
 
         heatmap.set_data(frames.T)
         heatmap.set_extent((WINDOW - len(frames), WINDOW, 0, SUBCARRIERS))
@@ -173,16 +189,37 @@ def main():
             if collected < CALIBRATION_FRAMES:
                 ax_heat.set_title(f"CALIBRATING: keep the space between the boards empty "
                                   f"({collected}/{CALIBRATION_FRAMES})")
-                return heatmap, motion_line, presence_line
+                return heatmap, motion_line, presence_line, idle_deviation_line, walk_deviation_line
             baseline.fit(frames[-CALIBRATION_FRAMES:])
 
         motion, presence = baseline.scores(frames)
         x = np.arange(WINDOW - len(frames), WINDOW)
         motion_line.set_data(x, motion)
         presence_line.set_data(x, presence)
+        def deviation_from(averages):
+            reference = next((values for values in reversed(averages)
+                              if values is not None), None)
+            deviation = np.zeros(len(frames))
+            if reference is not None:
+                active = reference > MIN_AMPLITUDE
+                if np.any(active):
+                    frame_shape = normalize(frames, active)
+                    reference_shape = reference[active] / (reference[active].mean() + 1e-6)
+                    raw = np.abs(frame_shape - reference_shape).mean(axis=1)
+                    if len(frames) >= MOTION_WINDOW:
+                        deviation[MOTION_WINDOW - 1:] = smooth(raw) * 100
+            return deviation
+
+        idle_deviation = deviation_from(idle_averages)
+        walk_deviation = deviation_from(walk_averages)
+        idle_deviation_line.set_data(x, idle_deviation)
+        walk_deviation_line.set_data(x, walk_deviation)
+        ax_deviation.relim()
+        ax_deviation.autoscale_view(scalex=False, scaley=True)
         ax_heat.set_title(f"{rate:.0f} frames/s   RSSI {rssi} dBm   "
-                          f"motion {motion[-1]:.1f}σ   presence {presence[-1]:.1f}σ")
-        return heatmap, motion_line, presence_line
+                          f"motion {motion[-1]:.1f}σ   presence {presence[-1]:.1f}σ   "
+                          f"idle Δ {idle_deviation[-1]:.1f}%")
+        return heatmap, motion_line, presence_line, idle_deviation_line, walk_deviation_line
 
     _anim = FuncAnimation(fig, update, interval=100, cache_frame_data=False)
     plt.show()
